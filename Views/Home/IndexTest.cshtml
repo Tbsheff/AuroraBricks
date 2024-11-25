@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Component.InvokeAsync("Slider")
+<div id="cookieConsentPopup" class="cookie-consent-popup">
+	<div class="cookie-consent-content">
+		<p>This website uses cookies to ensure you get the best experience on our website. <a href="/Home/Privacy">Learn More</a></p>
+		<button onclick="acceptCookies()">Got it!</button>
+	</div>
+</div>
+
+<!-- Chat bot stuff -->
+
+
+
+<script>
+	window.embeddedChatbotConfig = {
+		chatbotId: "hw-p-aI6ufNweKADpjIEB",
+		domain: "www.chatbase.co"
+	}
+</script>
+<script src="https://www.chatbase.co/embed.min.js"
+		chatbotId="hw-p-aI6ufNweKADpjIEB"
+		domain="www.chatbase.co"
+		defer>
+</script>
+
+<script>
+	function acceptCookies() {
+		document.getElementById('cookieConsentPopup').style.display = 'none';
+		document.cookie = "cookieConsent=true; max-age=" + 60 * 60 * 24 * 30 + "; path=/"; // Expires in 30 days
+	}
+</script>
+
+<!-- Related Products -->
+    
+@await Component.InvokeAsync("RecommendedProducts", new { recommendedProducts = ViewBag.RecommendedProducts })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,249 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/png" href="~/assets/images/icons/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="~/css/Register-Styles.css"/>
+<link rel="stylesheet" type="text/css" href="~/assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+<body>
+
+<div id="svg_wrap"></div>
+<a asp-action="Index" asp-controller="Home" id="backHome"><div class="button" ><i class="fa fa-arrow-left" style="padding-right: 5px;"></i>Exit</div></a>
+<h1 id="section-title">Online Application</h1>
+<div class="form-container">
+    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+        <div>
+            <p class="google-container">
+                <button type="submit" name="provider" value="Google" class="gsi-material-button" title="Log in using your Google account">
+                    <div class="gsi-material-button-state"></div>
+                    <div class="gsi-material-button-content-wrapper">
+                        <div class="gsi-material-button-icon">
+                            <!-- Google SVG icon here -->
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                                <path fill="none" d="M0 0h48v48H0z"></path>
+                            </svg>
+                        </div>
+                        <span class="gsi-material-button-contents">Sign in with Google</span>
+                        <span style="display: none;">Sign in with Google</span>
+                    </div>
+                </button>
+            </p>
+        </div>
+    </form>
+    <p class="text-center" id="or">Or</p>
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <section>
+            <h3 class="text-center">Create an Account</h3>
+            <input type="text" placeholder="First Name" asp-for="Input.FirstName"/>
+            <input type="text" placeholder="Last Name" asp-for="Input.LastName"/>
+
+
+
+
+        </section>
+
+        <section>
+            <h3 class="text-center">Personal Information</h3>
+            <label for="Birthdate" asp-for="Input.Dob">Birthdate</label>
+            <input type="date" id="Birthdate" asp-for="Input.Dob"/>
+            <label for="Gender" asp-for="Input.Gender">Gender</label>
+            <select id="Gender" asp-for="Input.Gender" asp-items="Model.Genders">
+                <option>Select your Gender</option>
+            </select>
+            <label for="country" asp-for="Input.Country">Country</label>
+            <span style="color: red !important; display: inline; float: none">*</span
+            >
+
+            <select id="country" asp-items="Model.Countries" asp-for="Input.Country" class="form-control">
+                <option value="">Select a Country</option>
+            </select>
+        </section>
+
+        <section>
+            <h3 class="text-center">How You'll Sign In</h3>
+
+            <input type="email" asp-for="Input.Email" placeholder="Email address"/>
+        </section>
+
+        <section>
+            <h3 class="text-center">Choose a Password</h3>
+
+            <input type="password" asp-for="Input.Password" autocomplete="new-password" aria-required="true" placeholder="Password"/>
+            <input type="password" asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true" placeholder="Confirm Password"/>
+        </section>
+        <div>
+            <div class="button" id="prev">&larr; Previous</div>
+            <div class="button" id="next">Next &rarr;</div>
+            <button class="button" id="submit" type="submit">Create Account</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+      $(document).ready(function () {
+        var base_color = "rgb(230,230,230)";
+        var active_color = "#ecb759";
+
+        var child = 1;
+        var length = $("section").length - 1;
+        var titles = [
+          "Online Application",
+          "Personal Information",
+          "How You'll Sign In",
+          "Password",
+        ];
+        $("#section-title").text(titles[0]);
+
+        $("#prev").addClass("disabled");
+        $("#submit").addClass("disabled");
+
+        $("section").not("section:nth-of-type(1)").hide();
+        $("section")
+          .not("section:nth-of-type(1)")
+          .css("transform", "translateX(100px)");
+
+        var svgWidth = length * 200 + 24;
+        $("#svg_wrap").html(
+          '<svg version="1.1" id="svg_form_time" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 ' +
+            svgWidth +
+            ' 24" xml:space="preserve"></svg>'
+        );
+
+        function makeSVG(tag, attrs) {
+          var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+          for (var k in attrs) el.setAttribute(k, attrs[k]);
+          return el;
+        }
+
+        for (i = 0; i < length; i++) {
+          var positionX = 12 + i * 200;
+          var rect = makeSVG("rect", {
+            x: positionX,
+            y: 9,
+            width: 200,
+            height: 6,
+          });
+          document.getElementById("svg_form_time").appendChild(rect);
+          // <g><rect x="12" y="9" width="200" height="6"></rect></g>'
+          var circle = makeSVG("circle", {
+            cx: positionX,
+            cy: 12,
+            r: 12,
+            width: positionX,
+            height: 6,
+          });
+          document.getElementById("svg_form_time").appendChild(circle);
+        }
+
+        var circle = makeSVG("circle", {
+          cx: positionX + 200,
+          cy: 12,
+          r: 12,
+          width: positionX,
+          height: 6,
+        });
+        document.getElementById("svg_form_time").appendChild(circle);
+
+        $("#svg_form_time rect").css("fill", base_color);
+        $("#svg_form_time circle").css("fill", base_color);
+        $("circle:nth-of-type(1)").css("fill", active_color);
+
+        $(".button").click(function () {
+            var currentSection = $("section:nth-of-type(" + child + ")");
+          $("#svg_form_time rect").css("fill", active_color);
+          $("#svg_form_time circle").css("fill", active_color);
+          var id = $(this).attr("id");
+          if (id == "next") {
+               if (!validateSection(currentSection)) {
+                              return; // Stop if the current section is not valid
+                          }
+            //$("#section-title").text(titles[child]);
+
+            $("#prev").removeClass("disabled");
+            if (child >= length) {
+              $(this).addClass("disabled");
+              $("#submit").removeClass("disabled");
+            }
+            if (child <= length) {
+              child++;
+            }
+          } else if (id == "prev") {
+            $("#next").removeClass("disabled");
+            $("#submit").addClass("disabled");
+            if (child <= 2) {
+              $(this).addClass("disabled");
+            }
+            if (child > 1) {
+              child--;
+            }
+          }
+          $("#section-title").text(titles[child - 1]);
+          var circle_child = child + 1;
+          $("#svg_form_time rect:nth-of-type(n + " + child + ")").css(
+            "fill",
+            base_color
+          );
+          $("#svg_form_time circle:nth-of-type(n + " + circle_child + ")").css(
+            "fill",
+            base_color
+          );
+          var currentSection = $("section:nth-of-type(" + child + ")");
+          currentSection.fadeIn();
+          currentSection.css("transform", "translateX(0)");
+          currentSection
+            .prevAll("section")
+            .css("transform", "translateX(-100px)");
+          currentSection
+            .nextAll("section")
+            .css("transform", "translateX(100px)");
+          $("section").not(currentSection).hide();
+          
+          if (child > 1) {
+              $(".google-container").hide();
+              $("#or").hide();
+            } else {
+              $(".google-container").show();
+                $("#or").show();
+            }
+          
+              
+          
+        });
+        
+      });
+      function validateSection(section) {
+                                var isValid = true;
+                                section.find('.required').each(function() {
+                                    if ($(this).val() === '') {
+                                        isValid = false;
+                                        $(this).addClass('error');
+                                    } else {
+                                        $(this).removeClass('error');
+                                    }
+                                });
+                                return isValid;
+                            }
+    </script>
+</body>
+</html>
+
+@*@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}*@
